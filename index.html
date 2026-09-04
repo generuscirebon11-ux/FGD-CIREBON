@@ -1,449 +1,795 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FGD Generus Cirebon</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    body { font-family: 'Inter', sans-serif; }
-    .page { display: none; }
-    .page.active { display: flex; }
-    @media print {
-      .no-print { display: none !important; }
-      .page { display: block !important; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus Group Discussion Daerah Cirebon</title>
+    
+    <!-- Library Cetak PDF & Gambar UHD -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #1e40af;
+            --primary-hover: #1d4ed8;
+            --bg: #ffffff;
+            --card-bg: #ffffff;
+            --border: #cbd5e1;
+            --text-main: #0f172a;
+            --text-sub: #475569;
+            --light-blue: #eff6ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Navigasi Halaman */
+        .page-step {
+            display: none;
+            width: 100%;
+            min-height: 100vh;
+        }
+
+        .page-step.active {
+            display: block;
+        }
+
+        /* Container & Card */
+        .container {
+            max-width: 920px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 2px solid var(--border);
+            border-left: 6px solid var(--primary);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .card h2 {
+            color: var(--primary);
+            font-size: 1.3rem;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        /* Form Inputs */
+        label {
+            display: block;
+            font-weight: 600;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        input[type="text"], input[type="number"], textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.98rem;
+            background: #ffffff;
+            transition: border 0.2s;
+        }
+
+        input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+
+        /* Buttons */
+        .btn {
+            background: var(--primary);
+            color: #ffffff;
+            border: 2px solid var(--primary);
+            padding: 14px 28px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+
+        .btn-outline {
+            background: #ffffff;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--light-blue);
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            border-color: #dc2626;
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            float: right;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .btn-add {
+            background: var(--light-blue);
+            color: var(--primary);
+            border: 2px dashed var(--primary);
+            width: 100%;
+            margin-top: 12px;
+        }
+
+        .btn-add:hover {
+            background: #dbeafe;
+        }
+
+        /* ================= HALAMAN 1 ================= */
+        #page-1 {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: var(--bg);
+        }
+
+        #page-1.active {
+            display: flex;
+        }
+
+        .hero-card {
+            max-width: 650px;
+            width: 100%;
+            text-align: center;
+            padding: 50px 30px;
+            border: 3px solid var(--primary);
+            border-radius: 16px;
+            background: #ffffff;
+        }
+
+        .hero-title {
+            font-size: 2.2rem;
+            color: var(--primary);
+            font-weight: 800;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-sub);
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .brand-tag {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 24px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* ================= CUSTOM MULTI-SELECT DROPDOWN ================= */
+        .custom-select-wrapper {
+            position: relative;
+            margin-top: 6px;
+        }
+
+        .selected-tags-container {
+            min-height: 46px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            cursor: pointer;
+            background: #ffffff;
+        }
+
+        .tag-chip {
+            background: var(--light-blue);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tag-chip .remove-tag {
+            cursor: pointer;
+            font-weight: bold;
+            color: #dc2626;
+        }
+
+        .dropdown-options-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #ffffff;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            max-height: 220px;
+            overflow-y: auto;
+            z-index: 100;
+            margin-top: 4px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+        }
+
+        .dropdown-options-menu.show {
+            display: block;
+        }
+
+        .option-item {
+            padding: 10px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .option-item:hover {
+            background: var(--light-blue);
+        }
+
+        .add-icon-btn {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        /* ================= HALAMAN 4 (RESULT) ================= */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            background: #ffffff;
+        }
+
+        th, td {
+            border: 1px solid var(--border);
+            padding: 10px;
+            text-align: left;
+            font-size: 0.88rem;
+        }
+
+        th {
+            background: var(--light-blue);
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .total-rab-box {
+            background: var(--light-blue);
+            border: 2px solid var(--primary);
+            padding: 16px;
+            border-radius: 8px;
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            margin-top: 16px;
+        }
+
+        .footer-credit {
+            text-align: center;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased min-h-screen">
+<body>
 
-  <div id="page1" class="page active min-h-screen flex-col justify-between items-center bg-gradient-to-br from-blue-900 via-blue-800 to-blue-950 text-white p-6">
-    <div></div>
-    <div class="flex flex-col items-center text-center max-w-2xl mx-auto my-auto space-y-6">
-      <div class="w-32 h-32 rounded-full bg-blue-900 border-4 border-white/20 shadow-2xl flex items-center justify-center p-4 mb-2 overflow-hidden backdrop-blur-md">
-        <svg viewBox="0 0 400 400" class="w-full h-full">
-          <text x="50%" y="42%" text-anchor="middle" fill="white" font-size="34" font-weight="700" font-family="Inter">Generus</text>
-          <text x="42%" y="62%" text-anchor="middle" fill="white" font-size="34" font-weight="700" font-family="Inter">Cirebon</text>
-          <g transform="translate(245, 185) scale(0.6)">
-            <path d="M0 -30 L0 30 M-30 0 L30 0 M-21 -21 L21 21 M-21 21 L21 -21" stroke="white" stroke-width="6" stroke-linecap="round"/>
-            <path d="M-15 15 L18 -18 M18 -18 L5 -18 M18 -18 L18 -5" stroke="white" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-          </g>
-        </svg>
-      </div>
-
-      <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight leading-tight">
-        Focus Group Discussion<br><span class="text-blue-300">Daerah Cirebon</span>
-      </h1>
-      <p class="text-base md:text-lg text-blue-100/90 font-light max-w-lg leading-relaxed">
-        Musyawarah terarah dan terstruktur untuk menganalisa problem dan menciptakan program kerja.
-      </p>
-      <span class="inline-block px-4 py-1.5 rounded-full bg-blue-700/50 border border-blue-400/30 text-xs font-semibold tracking-wider uppercase text-blue-200">
-        By Generus Cirebon
-      </span>
-
-      <div class="pt-6">
-        <button onclick="goToPage(2)" class="px-8 py-3.5 bg-white text-blue-900 font-semibold rounded-xl shadow-lg hover:bg-blue-50 transition-all duration-200 hover:scale-105 active:scale-95 flex items-center gap-2">
-          Selanjutnya
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-        </button>
-      </div>
-    </div>
-    <div class="text-xs text-blue-300/60 pb-2">© Generus Cirebon — Tim FGD</div>
-  </div>
-
-  <div class="max-w-5xl mx-auto p-4 md:p-8 w-full">
-
-    <div id="page2" class="page flex-col space-y-6">
-      <div class="border-b border-slate-200 pb-4">
-        <h2 class="text-2xl font-bold text-blue-900">Laporan Problem Anggota</h2>
-        <p class="text-slate-500 text-sm">Input seluruh permasalahan dari masing-masing wilayah untuk direkap.</p>
-      </div>
-
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden p-4 md:p-6 space-y-4">
-        <h3 class="font-semibold text-slate-700 text-sm uppercase tracking-wider">Daftar Permasalahan Wilayah</h3>
-        <div id="memberProblemsContainer" class="space-y-3">
-          </div>
-        <button onclick="addMemberProblem()" class="mt-2 text-sm text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-          Tambah Permasalahan
-        </button>
-      </div>
-
-      <div class="bg-blue-50/50 rounded-xl border border-blue-200 p-4 md:p-6 space-y-3">
-        <label class="block font-semibold text-blue-900 text-sm">Problem yang Disepakati & Ditindaklanjuti</label>
-        <textarea id="agreedProblem" rows="3" oninput="saveData()" class="w-full p-3 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-slate-800" placeholder="Tuliskan hasil kesepakatan problem utama yang akan dibahas lebih lanjut..."></textarea>
-      </div>
-
-      <div class="flex justify-between pt-4">
-        <button onclick="goToPage(1)" class="px-6 py-2.5 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-100 font-medium">Kembali</button>
-        <button onclick="goToPage(3)" class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium shadow-sm">Lanjut ke Form FGD</button>
-      </div>
+    <!-- ================= HALAMAN 1: PEMBUKAAN ================= -->
+    <div id="page-1" class="page-step active">
+        <div class="hero-card">
+            <h1 class="hero-title">Focus Group Discussion<br>Daerah Cirebon</h1>
+            <p class="hero-subtitle">Musyawarah terarah, terstruktur untuk menganalisa problem dan menciptakan program kerja.</p>
+            <button class="btn" onclick="nextPage(2)">Selanjutnya ➔</button>
+            <div class="brand-tag">by Generus Cirebon</div>
+        </div>
     </div>
 
-    <div id="page3" class="page flex-col space-y-6">
-      <div class="border-b border-slate-200 pb-4">
-        <h2 class="text-2xl font-bold text-blue-900">Form Isian FGD</h2>
-        <p class="text-slate-500 text-sm">Lengkapi detail perencanaan action plan dan penanggung jawab.</p>
-      </div>
+    <!-- ================= HALAMAN 2: LAPORAN PROBLEM ANGGOTA ================= -->
+    <div id="page-2" class="page-step">
+        <div class="container">
+            <div class="card">
+                <h2>📝 Laporan Problem Anggota</h2>
+                <p style="color: var(--text-sub); margin-bottom: 12px; font-size: 0.9rem;">Tuliskan permasalahan yang dibawa oleh masing-masing peserta musyawarah.</p>
+                <div id="member-problems-list"></div>
+                <button class="btn btn-add" onclick="addMemberProblemInput()">+ Tambah Input Problem Peserta</button>
+            </div>
 
-      <div class="bg-white p-5 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Nama Kelompok</label>
-          <input type="text" id="groupName" oninput="saveData()" class="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm" placeholder="Contoh: Kelompok 1">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Ketua Kelompok</label>
-          <input type="text" id="groupLeader" oninput="saveData()" class="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm" placeholder="Nama Ketua">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-600 mb-1">Fasilitator</label>
-          <input type="text" id="facilitator" oninput="saveData()" class="w-full p-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm" placeholder="Nama Fasilitator">
-        </div>
-      </div>
+            <div class="card">
+                <h2>🎯 Problem yang Disepakati</h2>
+                <label>Problem Utama yang Ditetapkan untuk Dibahas:</label>
+                <textarea id="agreed-problem" placeholder="Tuliskan permasalahan hasil kesepakatan bersama..." oninput="autoSave()"></textarea>
+            </div>
 
-      <div id="actionPlansContainer" class="space-y-6">
+            <div style="display: flex; justify-content: space-between;">
+                <button class="btn btn-outline" onclick="nextPage(1)">⬅️ Kembali</button>
+                <button class="btn" onclick="goToFormPage3()">Selanjutnya ➔</button>
+            </div>
+            <div class="footer-credit">by Generus Cirebon</div>
         </div>
-
-      <div class="flex justify-between items-center pt-4">
-        <button onclick="addActionPlanCard()" class="px-4 py-2 bg-slate-100 text-blue-700 rounded-lg hover:bg-slate-200 font-medium text-sm flex items-center gap-1 border border-slate-300">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-          Tambah Action Plan
-        </button>
-        <div class="flex gap-3">
-          <button onclick="goToPage(2)" class="px-6 py-2.5 border border-slate-300 text-slate-600 rounded-lg hover:bg-slate-100 font-medium">Kembali</button>
-          <button onclick="goToPage(4)" class="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium shadow-sm">Tampilkan Hasil Laporan</button>
-        </div>
-      </div>
     </div>
 
-    <div id="page4" class="page flex-col space-y-6">
-      <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-200 pb-4 gap-4 no-print">
-        <div>
-          <h2 class="text-2xl font-bold text-blue-900">Review & Result Laporan FGD</h2>
-          <p class="text-slate-500 text-sm">Pratinjau akhir laporan sebelum dipresentasikan atau diunduh.</p>
-        </div>
-        <div class="flex flex-wrap gap-2">
-          <button onclick="goToPage(3)" class="px-4 py-2 border border-slate-300 text-slate-700 rounded-lg hover:bg-slate-100 text-sm font-medium">Edit Form</button>
-          <button onclick="exportJPEG()" class="px-4 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 text-sm font-medium shadow-sm">Save JPEG UHD</button>
-          <button onclick="exportPDF()" class="px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 text-sm font-medium shadow-sm">Save PDF Full UHD</button>
-        </div>
-      </div>
+    <!-- ================= HALAMAN 3: FORM ISIAN FGD & RAB ================= -->
+    <div id="page-3" class="page-step">
+        <div class="container">
+            <!-- Identitas Kelompok -->
+            <div class="card">
+                <h2>📋 Identitas Kelompok</h2>
+                <div class="grid-3">
+                    <div>
+                        <label>Nama Kelompok:</label>
+                        <input type="text" id="group-name" placeholder="Contoh: Kelompok 1" oninput="autoSave()">
+                    </div>
+                    <div>
+                        <label>Ketua Kelompok:</label>
+                        <input type="text" id="group-leader" placeholder="Nama Ketua" oninput="autoSave()">
+                    </div>
+                    <div>
+                        <label>Fasilitator:</label>
+                        <input type="text" id="group-facilitator" placeholder="Nama Fasilitator" oninput="autoSave()">
+                    </div>
+                </div>
+            </div>
 
-      <div id="reportDocument" class="bg-white p-8 rounded-xl border border-slate-200 shadow-md space-y-6 text-slate-800">
-        <div class="flex justify-between items-center border-b-2 border-blue-900 pb-4">
-          <div>
-            <h1 class="text-2xl font-bold text-blue-900 uppercase tracking-wide">Laporan Hasil FGD</h1>
-            <p class="text-xs text-slate-500">Generus Cirebon • Musyawarah Program Kerja</p>
-          </div>
-          <div class="text-right text-xs text-slate-600 space-y-0.5">
-            <p><span class="font-semibold">Kelompok:</span> <span id="resGroup">-</span></p>
-            <p><span class="font-semibold">Ketua:</span> <span id="resLeader">-</span></p>
-            <p><span class="font-semibold">Fasilitator:</span> <span id="resFacilitator">-</span></p>
-          </div>
-        </div>
+            <!-- Container Form Problem & Action Plan -->
+            <div id="fgd-forms-container"></div>
 
-        <div class="bg-blue-50/60 p-4 rounded-lg border border-blue-100">
-          <h3 class="text-xs font-bold text-blue-900 uppercase tracking-wider mb-1">Problem Utama yang Disepakati</h3>
-          <p id="resAgreedProblem" class="text-sm text-slate-700 whitespace-pre-wrap font-medium">-</p>
-        </div>
+            <button class="btn btn-add" onclick="addFgdFormBlock()" style="margin-bottom: 20px;">+ Tambah Problem & Action Plan Baru</button>
 
-        <div id="resPlansContainer" class="space-y-6">
-          </div>
-      </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <button class="btn btn-outline" onclick="nextPage(2)">⬅️ Kembali</button>
+                <button class="btn" onclick="generateReport()">Tampilkan Hasil Laporan 📊</button>
+            </div>
+            <div class="footer-credit">by Generus Cirebon</div>
+        </div>
     </div>
 
-  </div>
+    <!-- ================= HALAMAN 4: REVIEW & RESULT ================= -->
+    <div id="page-4" class="page-step">
+        <div class="container">
+            <!-- Area Cetak Laporan -->
+            <div id="print-area" style="background: #ffffff; padding: 30px; border: 2px solid var(--primary); border-radius: 12px;">
+                <div style="text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 12px; margin-bottom: 20px;">
+                    <h1 style="color: var(--primary); font-size: 1.8rem; text-transform: uppercase;">Laporan FGD Daerah Cirebon</h1>
+                    <p id="out-group-info" style="font-weight: 600; color: var(--text-sub); margin-top: 4px;"></p>
+                </div>
 
-  <script>
-    const ppgFieldsOptions = [
-      "Kurikulum", "Tenaga Pendidik", "Penggalang Dana", "Sarana Prasarana", 
-      "KMM", "Seni dan Olahraga", "Kemandirian", "Keputrian", 
-      "Bimbingan Konseling", "Tahfidzul Quran", "Mahasiswa"
+                <div id="out-results-list"></div>
+
+                <div id="out-total-rab" class="total-rab-box"></div>
+                <div class="footer-credit" style="margin-top: 30px;">by Generus Cirebon</div>
+            </div>
+
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px;">
+                <button class="btn btn-outline" style="flex: 1;" onclick="nextPage(3)">✏️ Edit Form</button>
+                <button class="btn" style="flex: 1; background: #059669; border-color: #059669;" onclick="downloadJPG()">🖼️ Save JPEG UHD</button>
+                <button class="btn" style="flex: 1;" onclick="downloadPDF()">📄 Save PDF Full</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // LIST BIDANG PPG DENGAN KANONIKAL PRESISI
+    const PPG_BIDANG = [
+        "Kurikulum",
+        "Tenaga Pendidik",
+        "Penggalang Dana",
+        "Sarana Prasarana",
+        "KMM",
+        "Seni dan Olahraga",
+        "Kemandirian",
+        "Keputrian",
+        "Bimbingan Konseling",
+        "Tahfidzul Quran",
+        "Mahasiswa"
     ];
 
-    let appData = {
-      memberProblems: [""],
-      agreedProblem: "",
-      groupName: "",
-      groupLeader: "",
-      facilitator: "",
-      actionPlans: []
-    };
+    let memberProblemCount = 0;
+    let fgdBlockCount = 0;
 
-    function initData() {
-      const saved = localStorage.getItem("fgd_generus_cirebon");
-      if (saved) {
-        try { appData = JSON.parse(saved); } catch(e) {}
-      }
-      if (!appData.actionPlans || appData.actionPlans.length === 0) {
-        appData.actionPlans = [createNewPlanObject()];
-      }
-      renderAll();
+    // NAVIGASI HALAMAN
+    function nextPage(step) {
+        document.querySelectorAll('.page-step').forEach(p => p.classList.remove('active'));
+        document.getElementById(`page-${step}`).classList.add('active');
+        window.scrollTo(0, 0);
     }
 
-    function createNewPlanObject() {
-      return {
-        agreedProblem: appData.agreedProblem || "",
-        rootCause: "",
-        solution: "",
-        activityName: "",
-        description: "",
-        targetOutput: "",
-        targetAudience: "",
-        executionTime: "",
-        rab: "",
-        selectedPPG: []
-      };
-    }
-
-    function saveData() {
-      // Capture non-dynamic inputs
-      appData.agreedProblem = document.getElementById("agreedProblem").value;
-      appData.groupName = document.getElementById("groupName").value;
-      appData.groupLeader = document.getElementById("groupLeader").value;
-      appData.facilitator = document.getElementById("facilitator").value;
-
-      localStorage.setItem("fgd_generus_cirebon", JSON.stringify(appData));
-    }
-
-    function goToPage(pageNum) {
-      saveData();
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById(`page${pageNum}`).classList.add('active');
-      window.scrollTo(0, 0);
-
-      if (pageNum === 3) syncAgreedProblemToPlans();
-      if (pageNum === 4) renderReviewPage();
-    }
-
-    /* Page 2 Logic */
-    function renderMemberProblems() {
-      const container = document.getElementById("memberProblemsContainer");
-      container.innerHTML = "";
-      appData.memberProblems.forEach((prob, index) => {
-        const div = document.createElement("div");
-        div.className = "flex gap-2 items-center";
-        div.innerHTML = `
-          <span class="text-sm font-semibold text-slate-400 w-6 text-right">${index + 1}.</span>
-          <input type="text" value="${prob.replace(/"/g, '&quot;')}" oninput="updateMemberProblem(${index}, this.value)" 
-            class="flex-1 p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" placeholder="Problem dari wilayah...">
-          ${appData.memberProblems.length > 1 ? `
-            <button onclick="removeMemberProblem(${index})" class="text-red-500 hover:text-red-700 p-2 text-sm font-bold">✕</button>
-          ` : ''}
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function updateMemberProblem(index, val) {
-      appData.memberProblems[index] = val;
-      saveData();
-    }
-
-    function addMemberProblem() {
-      appData.memberProblems.push("");
-      renderMemberProblems();
-      saveData();
-    }
-
-    function removeMemberProblem(index) {
-      appData.memberProblems.splice(index, 1);
-      renderMemberProblems();
-      saveData();
-    }
-
-    /* Page 3 Logic */
-    function syncAgreedProblemToPlans() {
-      appData.actionPlans.forEach(plan => {
-        if (!plan.agreedProblem) {
-          plan.agreedProblem = appData.agreedProblem;
-        }
-      });
-      renderActionPlans();
-    }
-
-    function renderActionPlans() {
-      const container = document.getElementById("actionPlansContainer");
-      container.innerHTML = "";
-
-      appData.actionPlans.forEach((plan, idx) => {
-        const card = document.createElement("div");
-        card.className = "bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4 relative";
+    // PINDAH KE HALAMAN 3 (Auto Fill Problem Pertama)
+    function goToFormPage3() {
+        const agreedText = document.getElementById('agreed-problem').value;
+        const firstProblemInput = document.getElementById('problem-text-1');
         
-        let ppgOptionsHTML = ppgFieldsOptions.map(opt => {
-          const selected = plan.selectedPPG.includes(opt) ? "selected" : "";
-          return `<option value="${opt}" ${selected}>${opt}</option>`;
-        }).join("");
+        if (firstProblemInput && !firstProblemInput.value.trim()) {
+            firstProblemInput.value = agreedText;
+        }
+        autoSave();
+        nextPage(3);
+    }
 
-        card.innerHTML = `
-          <div class="flex justify-between items-center border-b pb-3">
-            <h3 class="font-bold text-blue-900 text-base">Form Isian FGD - Item #${idx + 1}</h3>
-            <button onclick="deleteActionPlanCard(${idx})" class="text-xs bg-red-50 text-red-600 px-3 py-1.5 rounded-md hover:bg-red-100 font-medium">Hapus Form Ini</button>
-          </div>
+    // HALAMAN 2: TAMBAH PROBLEM ANGGOTA
+    function addMemberProblemInput(val = '') {
+        memberProblemCount++;
+        const id = memberProblemCount;
+        const container = document.getElementById('member-problems-list');
 
-          <div class="space-y-3">
-            <div>
-              <label class="block text-xs font-semibold text-slate-600 mb-1">Problem yang Disepakati</label>
-              <textarea oninput="updatePlanField(${idx}, 'agreedProblem', this.value)" rows="2" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500">${plan.agreedProblem}</textarea>
+        const html = `
+            <div id="member-prob-item-${id}" style="margin-bottom: 10px;">
+                <label>Problem Peserta #${id}:</label>
+                <input type="text" id="input-member-prob-${id}" placeholder="Tuliskan masalah dari peserta..." value="${val}" oninput="autoSave()">
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Akar Masalah</label>
-                <textarea oninput="updatePlanField(${idx}, 'rootCause', this.value)" rows="2" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" placeholder="Penyebab utama masalah...">${plan.rootCause}</textarea>
-              </div>
-              <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Solusi</label>
-                <textarea oninput="updatePlanField(${idx}, 'solution', this.value)" rows="2" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" placeholder="Solusi yang ditawarkan...">${plan.solution}</textarea>
-              </div>
-            </div>
-
-            <div class="border-t pt-3">
-              <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Rincian Action Plan</h4>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div>
-                  <label class="block text-xs font-medium text-slate-600 mb-1">Nama Kegiatan</label>
-                  <input type="text" value="${plan.activityName}" oninput="updatePlanField(${idx}, 'activityName', this.value)" class="w-full p-2 border border-slate-300 rounded-lg text-sm">
-                </div>
-                <div>
-                  <label class="block text-xs font-medium text-slate-600 mb-1">Deskripsi Kegiatan</label>
-                  <input type="text" value="${plan.description}" oninput="updatePlanField(${idx}, 'description', this.value)" class="w-full p-2 border border-slate-300 rounded-lg text-sm">
-                </div>
-                <div>
-                  <label class="block text-xs font-medium text-slate-600 mb-1">Output / Target</label>
-                  <input type="text" value="${plan.targetOutput}" oninput="updatePlanField(${idx}, 'targetOutput', this.value)" class="w-full p-2 border border-slate-300 rounded-lg text-sm">
-                </div>
-                <div>
-                  <label class="block text-xs font-medium text-slate-600 mb-1">Sasaran Peserta</label>
-                  <input type="text" value="${plan.targetAudience}" oninput="updatePlanField(${idx}, 'targetAudience', this.value)" class="w-full p-2 border border-slate-300 rounded-lg text-sm">
-                </div>
-                <div>
-                  <label class="block text-xs font-medium text-slate-600 mb-1">Waktu Pelaksanaan</label>
-                  <input type="text" value="${plan.executionTime}" oninput="updatePlanField(${idx}, 'executionTime', this.value)" class="w-full p-2 border border-slate-300 rounded-lg text-sm">
-                </div>
-                <div>
-                  <label class="block text-xs font-medium text-slate-600 mb-1">RAB (Anggaran)</label>
-                  <input type="text" value="${plan.rab}" oninput="updatePlanField(${idx}, 'rab', this.value)" class="w-full p-2 border border-slate-300 rounded-lg text-sm" placeholder="Rp 0">
-                </div>
-              </div>
-
-              <div class="mt-3">
-                <label class="block text-xs font-medium text-slate-600 mb-1">Bidang PPG Penanggung Jawab <span class="text-blue-600 font-normal">(Bisa pilih lebih dari satu dengan tahan Ctrl/Cmd)</span></label>
-                <select multiple onchange="updatePPGSelection(${idx}, this)" class="w-full p-2 border border-slate-300 rounded-lg text-sm h-28 focus:ring-2 focus:ring-blue-500">
-                  ${ppgOptionsHTML}
-                </select>
-              </div>
-            </div>
-          </div>
         `;
-        container.appendChild(card);
-      });
+        container.insertAdjacentHTML('beforeend', html);
     }
 
-    function updatePlanField(idx, field, value) {
-      appData.actionPlans[idx][field] = value;
-      saveData();
-    }
+    // HALAMAN 3: TAMBAH BLOCK FGD FORM
+    function addFgdFormBlock(data = null) {
+        fgdBlockCount++;
+        const id = fgdBlockCount;
+        const container = document.getElementById('fgd-forms-container');
 
-    function updatePPGSelection(idx, selectEl) {
-      const selected = Array.from(selectEl.selectedOptions).map(opt => opt.value);
-      appData.actionPlans[idx].selectedPPG = selected;
-      saveData();
-    }
+        const selectedPjList = data && data.pj ? data.pj : [];
 
-    function addActionPlanCard() {
-      appData.actionPlans.push(createNewPlanObject());
-      renderActionPlans();
-      saveData();
-    }
+        const html = `
+            <div class="card fgd-block" id="fgd-block-${id}">
+                ${id > 1 ? `<button type="button" class="btn btn-danger" onclick="removeFgdBlock(${id})">Hapus Form</button>` : ''}
+                <h2>Form Rangkaian FGD #${id}</h2>
 
-    function deleteActionPlanCard(idx) {
-      appData.actionPlans.splice(idx, 1);
-      renderActionPlans();
-      saveData();
-    }
+                <label>Problem yang Disepakati:</label>
+                <textarea id="problem-text-${id}" placeholder="Tuliskan problem..." oninput="autoSave()">${data ? data.problem : ''}</textarea>
 
-    /* Page 4 Logic */
-    function renderReviewPage() {
-      document.getElementById("resGroup").innerText = appData.groupName || "-";
-      document.getElementById("resLeader").innerText = appData.groupLeader || "-";
-      document.getElementById("resFacilitator").innerText = appData.facilitator || "-";
-      document.getElementById("resAgreedProblem").innerText = appData.agreedProblem || "Belum diisi.";
+                <label>Akar Masalah:</label>
+                <textarea id="root-cause-${id}" placeholder="Tuliskan akar penyebab masalah..." oninput="autoSave()">${data ? data.rootCause : ''}</textarea>
 
-      const container = document.getElementById("resPlansContainer");
-      container.innerHTML = "";
+                <label>Solusi:</label>
+                <textarea id="solution-${id}" placeholder="Tuliskan solusi terbaik..." oninput="autoSave()">${data ? data.solution : ''}</textarea>
 
-      appData.actionPlans.forEach((plan, idx) => {
-        const item = document.createElement("div");
-        item.className = "border border-slate-200 rounded-lg p-5 space-y-4 bg-slate-50/30";
-        item.innerHTML = `
-          <div class="border-b pb-2 flex justify-between items-center">
-            <h4 class="font-bold text-blue-900 text-sm">Action Plan #${idx + 1}</h4>
-          </div>
+                <h3 style="margin-top: 20px; color: var(--primary); font-size: 1.1rem; border-top: 1px dashed var(--border); padding-top: 12px;">Action Plan & RAB</h3>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-            <div><span class="font-semibold text-slate-500">Akar Masalah:</span> <p class="text-slate-800 font-medium">${plan.rootCause || '-'}</p></div>
-            <div><span class="font-semibold text-slate-500">Solusi:</span> <p class="text-slate-800 font-medium">${plan.solution || '-'}</p></div>
-          </div>
+                <div class="grid-2">
+                    <div>
+                        <label>Nama Kegiatan:</label>
+                        <input type="text" id="act-name-${id}" placeholder="Nama kegiatan" value="${data ? data.actName : ''}" oninput="autoSave()">
+                    </div>
+                    <div>
+                        <label>Output / Target:</label>
+                        <input type="text" id="act-target-${id}" placeholder="Hasil yang diharapkan" value="${data ? data.actTarget : ''}" oninput="autoSave()">
+                    </div>
+                </div>
 
-          <div class="bg-white p-3 rounded border border-slate-200 grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
-            <div><span class="text-slate-400 block">Nama Kegiatan:</span> <span class="font-semibold text-slate-700">${plan.activityName || '-'}</span></div>
-            <div><span class="text-slate-400 block">Target / Output:</span> <span class="font-semibold text-slate-700">${plan.targetOutput || '-'}</span></div>
-            <div><span class="text-slate-400 block">Sasaran:</span> <span class="font-semibold text-slate-700">${plan.targetAudience || '-'}</span></div>
-            <div><span class="text-slate-400 block">Waktu:</span> <span class="font-semibold text-slate-700">${plan.executionTime || '-'}</span></div>
-            <div class="col-span-2"><span class="text-slate-400 block">Deskripsi:</span> <span class="font-semibold text-slate-700">${plan.description || '-'}</span></div>
-            <div><span class="text-slate-400 block">RAB:</span> <span class="font-semibold text-blue-700">${plan.rab || '-'}</span></div>
-            <div><span class="text-slate-400 block">Bidang PPG:</span> <span class="font-semibold text-blue-900">${plan.selectedPPG.join(", ") || '-'}</span></div>
-          </div>
+                <label>Deskripsi Kegiatan:</label>
+                <textarea id="act-desc-${id}" placeholder="Penjelasan detail pelaksanaan..." oninput="autoSave()">${data ? data.actDesc : ''}</textarea>
+
+                <div class="grid-3">
+                    <div>
+                        <label>Sasaran Peserta:</label>
+                        <input type="text" id="act-target-user-${id}" placeholder="Target peserta" value="${data ? data.actTargetUser : ''}" oninput="autoSave()">
+                    </div>
+                    <div>
+                        <label>Waktu Pelaksanaan:</label>
+                        <input type="text" id="act-time-${id}" placeholder="Contoh: Pekan 2" value="${data ? data.actTime : ''}" oninput="autoSave()">
+                    </div>
+                    <div>
+                        <label>Rencana Anggaran Biaya (Rp):</label>
+                        <input type="number" id="act-rab-${id}" placeholder="Contoh: 500000" value="${data ? data.actRab : ''}" oninput="autoSave()">
+                    </div>
+                </div>
+
+                <label>Bidang PPG yang Bertanggung Jawab <span style="font-weight: 400; font-size: 0.85rem; color: var(--text-sub);">(Bisa pilih lebih dari satu)</span>:</label>
+                <div class="custom-select-wrapper">
+                    <div class="selected-tags-container" id="tags-container-${id}" onclick="toggleDropdownMenu(${id})">
+                        <span style="color: #94a3b8; font-size: 0.9rem;" id="placeholder-tag-${id}">Klik untuk memilih bidang PPG...</span>
+                    </div>
+                    <div class="dropdown-options-menu" id="dropdown-menu-${id}">
+                        ${PPG_BIDANG.map(b => `
+                            <div class="option-item" onclick="addPjTag(${id}, '${b}')">
+                                <span>${b}</span>
+                                <span class="add-icon-btn">+</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
         `;
-        container.appendChild(item);
-      });
+
+        container.insertAdjacentHTML('beforeend', html);
+
+        // Render Tag Pilihan yang Tersimpan
+        if (selectedPjList.length > 0) {
+            selectedPjList.forEach(tag => addPjTag(id, tag, false));
+        }
+
+        autoSave();
     }
 
-    function renderAll() {
-      document.getElementById("agreedProblem").value = appData.agreedProblem || "";
-      document.getElementById("groupName").value = appData.groupName || "";
-      document.getElementById("groupLeader").value = appData.groupLeader || "";
-      document.getElementById("facilitator").value = appData.facilitator || "";
-      renderMemberProblems();
-      renderActionPlans();
+    function removeFgdBlock(id) {
+        const block = document.getElementById(`fgd-block-${id}`);
+        if (block) block.remove();
+        autoSave();
     }
 
-    /* Export Functions */
-    function getFileName(ext) {
-      const gName = (appData.groupName || "Kelompok").replace(/[^a-z0-9]/gi, '_').toLowerCase();
-      return `FGD_Generus_Cirebon_${gName}.${ext}`;
+    // FUNGSI MULTI-SELECT DROPDOWN TAG
+    function toggleDropdownMenu(id) {
+        const menu = document.getElementById(`dropdown-menu-${id}`);
+        menu.classList.toggle('show');
     }
 
-    async function exportJPEG() {
-      const element = document.getElementById("reportDocument");
-      const canvas = await html2canvas(element, { scale: 3, useCORS: true });
-      const link = document.createElement("a");
-      link.download = getFileName("jpg");
-      link.href = canvas.toDataURL("image/jpeg", 1.0);
-      link.click();
+    // Tutup dropdown jika klik di luar
+    window.addEventListener('click', function(e) {
+        if (!e.target.closest('.custom-select-wrapper')) {
+            document.querySelectorAll('.dropdown-options-menu').forEach(m => m.classList.remove('show'));
+        }
+    });
+
+    function addPjTag(blockId, tagValue, doSave = true) {
+        const container = document.getElementById(`tags-container-${blockId}`);
+        const placeholder = document.getElementById(`placeholder-tag-${blockId}`);
+
+        // Cegah Duplikasi
+        const existingTags = Array.from(container.querySelectorAll('.tag-chip')).map(el => el.dataset.val);
+        if (existingTags.includes(tagValue)) return;
+
+        if (placeholder) placeholder.style.display = 'none';
+
+        const chip = document.createElement('div');
+        chip.className = 'tag-chip';
+        chip.dataset.val = tagValue;
+        chip.innerHTML = `
+            <span>${tagValue}</span>
+            <span class="remove-tag" onclick="removePjTag(event, ${blockId}, '${tagValue}')">×</span>
+        `;
+
+        container.appendChild(chip);
+        if (doSave) autoSave();
     }
 
-    async function exportPDF() {
-      const { jsPDF } = window.jspdf;
-      const element = document.getElementById("reportDocument");
-      const canvas = await html2canvas(element, { scale: 3, useCORS: true });
-      const imgData = canvas.toDataURL("image/jpeg", 1.0);
-      
-      const pdf = new jsPDF("p", "mm", "a4");
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-      
-      pdf.addImage(imgData, "JPEG", 0, 0, pdfWidth, pdfHeight);
-      pdf.save(getFileName("pdf"));
+    function removePjTag(event, blockId, tagValue) {
+        event.stopPropagation();
+        const container = document.getElementById(`tags-container-${blockId}`);
+        const chip = container.querySelector(`.tag-chip[data-val="${tagValue}"]`);
+        if (chip) chip.remove();
+
+        const remaining = container.querySelectorAll('.tag-chip');
+        if (remaining.length === 0) {
+            document.getElementById(`placeholder-tag-${blockId}`).style.display = 'inline';
+        }
+        autoSave();
     }
 
-    // Init App
-    window.onload = initData;
-  </script>
+    // AUTO SAVE LOCALSTORAGE
+    function autoSave() {
+        const memberProblems = [];
+        for (let i = 1; i <= memberProblemCount; i++) {
+            const input = document.getElementById(`input-member-prob-${i}`);
+            if (input) memberProblems.push(input.value);
+        }
+
+        const fgdBlocksData = [];
+        const blocks = document.querySelectorAll('.fgd-block');
+        blocks.forEach(block => {
+            const id = block.id.replace('fgd-block-', '');
+            
+            const selectedTags = [];
+            const tagContainer = document.getElementById(`tags-container-${id}`);
+            if (tagContainer) {
+                tagContainer.querySelectorAll('.tag-chip').forEach(chip => {
+                    selectedTags.push(chip.dataset.val);
+                });
+            }
+
+            fgdBlocksData.push({
+                problem: document.getElementById(`problem-text-${id}`)?.value || '',
+                rootCause: document.getElementById(`root-cause-${id}`)?.value || '',
+                solution: document.getElementById(`solution-${id}`)?.value || '',
+                actName: document.getElementById(`act-name-${id}`)?.value || '',
+                actTarget: document.getElementById(`act-target-${id}`)?.value || '',
+                actDesc: document.getElementById(`act-desc-${id}`)?.value || '',
+                actTargetUser: document.getElementById(`act-target-user-${id}`)?.value || '',
+                actTime: document.getElementById(`act-time-${id}`)?.value || '',
+                actRab: document.getElementById(`act-rab-${id}`)?.value || '',
+                pj: selectedTags
+            });
+        });
+
+        const store = {
+            memberProblems: memberProblems,
+            agreedProblem: document.getElementById('agreed-problem')?.value || '',
+            groupName: document.getElementById('group-name')?.value || '',
+            groupLeader: document.getElementById('group-leader')?.value || '',
+            groupFacilitator: document.getElementById('group-facilitator')?.value || '',
+            fgdBlocks: fgdBlocksData
+        };
+
+        localStorage.setItem('fgd_cirebon_v9_data', JSON.stringify(store));
+    }
+
+    function loadSavedData() {
+        const saved = localStorage.getItem('fgd_cirebon_v9_data');
+        if (!saved) {
+            addMemberProblemInput();
+            addFgdFormBlock();
+            return;
+        }
+
+        const data = JSON.parse(saved);
+        document.getElementById('agreed-problem').value = data.agreedProblem || '';
+        document.getElementById('group-name').value = data.groupName || '';
+        document.getElementById('group-leader').value = data.groupLeader || '';
+        document.getElementById('group-facilitator').value = data.groupFacilitator || '';
+
+        // Restore Halaman 2 Problem Peserta
+        if (data.memberProblems && data.memberProblems.length > 0) {
+            data.memberProblems.forEach(val => addMemberProblemInput(val));
+        } else {
+            addMemberProblemInput();
+        }
+
+        // Restore Halaman 3 FGD Blocks
+        if (data.fgdBlocks && data.fgdBlocks.length > 0) {
+            data.fgdBlocks.forEach(bData => addFgdFormBlock(bData));
+        } else {
+            addFgdFormBlock();
+        }
+    }
+
+    function formatRupiah(num) {
+        if (!num || isNaN(num)) return 'Rp 0';
+        return 'Rp ' + parseInt(num).toLocaleString('id-ID');
+    }
+
+    // GENERATE RESULT (HALAMAN 4)
+    function generateReport() {
+        autoSave();
+        const saved = JSON.parse(localStorage.getItem('fgd_cirebon_v9_data'));
+
+        document.getElementById('out-group-info').innerText = 
+            `Nama Kelompok: ${saved.groupName || '-'} | Ketua: ${saved.groupLeader || '-'} | Fasilitator: ${saved.groupFacilitator || '-'}`;
+
+        let html = '';
+        let totalRab = 0;
+
+        saved.fgdBlocks.forEach((item, idx) => {
+            const rabVal = parseFloat(item.actRab) || 0;
+            totalRab += rabVal;
+
+            const pjBadges = item.pj && item.pj.length > 0 
+                ? item.pj.map(p => `<span class="tag-chip" style="display:inline-flex; font-size:0.75rem; margin:2px;">${p}</span>`).join(' ') 
+                : '-';
+
+            html += `
+                <div style="border-bottom: 2px solid var(--border); padding-bottom: 18px; margin-bottom: 20px;">
+                    <h3 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 8px;">Rangkaian FGD #${idx + 1}</h3>
+                    <p style="margin: 4px 0;"><strong>Problem:</strong> ${item.problem || '-'}</p>
+                    <p style="margin: 4px 0;"><strong>Akar Masalah:</strong> ${item.rootCause || '-'}</p>
+                    <p style="margin: 4px 0;"><strong>Solusi:</strong> ${item.solution || '-'}</p>
+                    
+                    <h4 style="margin-top: 12px; margin-bottom: 6px; color: var(--primary);">Action Plan & RAB</h4>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nama Kegiatan</th>
+                                <th>Deskripsi</th>
+                                <th>Output/Target</th>
+                                <th>Sasaran</th>
+                                <th>Waktu</th>
+                                <th>RAB</th>
+                                <th>Bidang PPG</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><b>${item.actName || '-'}</b></td>
+                                <td>${item.actDesc || '-'}</td>
+                                <td>${item.actTarget || '-'}</td>
+                                <td>${item.actTargetUser || '-'}</td>
+                                <td>${item.actTime || '-'}</td>
+                                <td><b>${formatRupiah(rabVal)}</b></td>
+                                <td>${pjBadges}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+        });
+
+        document.getElementById('out-results-list').innerHTML = html;
+        document.getElementById('out-total-rab').innerHTML = `
+            <span>TOTAL RENCANA ANGGARAN BIAYA (RAB):</span>
+            <span>${formatRupiah(totalRab)}</span>
+        `;
+
+        nextPage(4);
+    }
+
+    // DOWNLOAD UNDUH JPG (UHD)
+    function downloadJPG() {
+        const groupName = document.getElementById('group-name').value || 'Kelompok';
+        const fileName = `Laporan_FGD_${groupName.replace(/\s+/g, '_')}.jpg`;
+        const element = document.getElementById('print-area');
+
+        html2canvas(element, { scale: 3 }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = fileName;
+            link.href = canvas.toDataURL('image/jpeg', 1.0);
+            link.click();
+        });
+    }
+
+    // DOWNLOAD UNDUH PDF (FULL)
+    function downloadPDF() {
+        const groupName = document.getElementById('group-name').value || 'Kelompok';
+        const fileName = `Laporan_FGD_${groupName.replace(/\s+/g, '_')}.pdf`;
+        const element = document.getElementById('print-area');
+
+        const opt = {
+            margin:       0.3,
+            filename:     fileName,
+            image:        { type: 'jpeg', quality: 1.0 },
+            html2canvas:  { scale: 3 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save();
+    }
+
+    window.onload = loadSavedData;
+</script>
+
 </body>
 </html>
